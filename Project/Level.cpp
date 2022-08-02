@@ -94,6 +94,7 @@ void Level::Draw()
 	// Draw actors
 	for (auto actor = m_pActors.begin(); actor != m_pActors.end(); ++actor)
 	{
+		
 		if ((*actor)->IsActive())
 		{
 			actorCursorPosition.X = (*actor)->GetXPosition();
@@ -102,12 +103,16 @@ void Level::Draw()
 			(*actor)->Draw();
 		}
 		if ((*actor)->GetType() == ActorType::PressurePlate) {
-			PressurePlate* plateCheck = dynamic_cast<PressurePlate*>(*actor);
-			Door* doorToOpen = FindDoor(plateCheck->GetColor(), plateCheck->GetXPosition(), plateCheck->GetYPosition());
-			if (isOn(plateCheck->GetXPosition(), plateCheck->GetYPosition())) {
+			PressurePlate* plate = dynamic_cast<PressurePlate*>(*actor);
+			Door* doorToOpen = FindDoor((*actor)->GetColor(), (*actor)->GetXPosition(), (*actor)->GetYPosition());
+			if (isOn((*actor)->GetXPosition(), (*actor)->GetYPosition())) {
+				plate->pressured();
+				plate->Remove();
 				doorToOpen->Open();
 			}
 			else {
+				plate->noPressure();
+				plate->Place(plate->GetXPosition(), plate->GetYPosition());
 				doorToOpen->Close();
 			}
 		}
@@ -236,14 +241,12 @@ Door* Level::FindDoor(ActorColor plateColor, int platePositionX, int platePositi
 bool Level::isOn(int platePositionX, int platePositionY) {
 
 	for (auto actor = m_pActors.begin(); actor != m_pActors.end(); ++actor) {
-		// iterate through all active actors then find a door with the same color as the plates
+		// iterate through all active actors then find a player or key with the same coordinates as a plate
 		if ((*actor)->GetType() == ActorType::Player || (*actor)->GetType() == ActorType::Key && (*actor)->GetXPosition() == platePositionX && (*actor)->GetYPosition() == platePositionY) {
 			return true;
 		}
-		else {
-			return false;
-		}
 	}
+	return false;
 }
 
 // Updates all actors and returns a colliding actor if there is one
@@ -258,7 +261,7 @@ PlacableActor* Level::UpdateActors(int x, int y)
 		if (x == (*actor)->GetXPosition() && y == (*actor)->GetYPosition())
 		{
 			// should only be able to collide with one actor
-			assert(collidedActor == nullptr);
+			//assert(collidedActor == nullptr);
 			collidedActor = (*actor);
 		}
 	}

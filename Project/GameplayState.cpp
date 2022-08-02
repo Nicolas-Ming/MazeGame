@@ -233,13 +233,6 @@ void GameplayState::HandleCollision(int newPlayerX, int newPlayerY)
 			PressurePlate* pressurePlate = dynamic_cast<PressurePlate*>(collidedActor);
 			assert(pressurePlate);
 			m_player.SetPosition(newPlayerX, newPlayerY);
-			//if (!pressurePlate->IsPressured())
-			//{
-			//	
-			//	pressurePlate->pressured();
-			//	m_pLevel->FindDoor(pressurePlate->GetColor(), pressurePlate->GetXPosition(), pressurePlate->GetYPosition());
-			//	//find door of same color then open door?
-			//}
 
 			break;
 		}
