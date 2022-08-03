@@ -11,3 +11,8 @@ void Goal::Draw()
 {
 	std::cout << "X";
 }
+
+void Goal::gotCollided(PlacableActor &player) {
+	this->Remove();
+	player.SetPosition(this->GetXPosition(), this->GetYPosition());
+}

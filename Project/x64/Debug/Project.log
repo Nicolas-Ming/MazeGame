@@ -1,3 +1,16 @@
-﻿  Level.cpp
+﻿  Door.cpp
+  Enemy.cpp
+  Game.cpp
+  GameplayState.cpp
+  Goal.cpp
+  Key.cpp
+  Level.cpp
+  Money.cpp
+  PlacableActor.cpp
+  Player.cpp
+  Project.cpp
+  PressurePlate.cpp
+  StateMachineExampleGame.cpp
+  Generating Code...
 C:\Users\nming\source\repos\MazeGame-main\MazeGame\Project\Level.cpp(239): warning C4715: 'Level::FindDoor': not all control paths return a value
   Project.vcxproj -> C:\Users\nming\source\repos\MazeGame-main\MazeGame\x64\Debug\Project.exe

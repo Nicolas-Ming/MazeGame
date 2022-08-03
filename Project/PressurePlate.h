@@ -6,6 +6,7 @@ class PressurePlate : public PlacableActor
 public:
 	PressurePlate(int x, int y, ActorColor color);
 	virtual void Draw() override;
+	virtual void gotCollided(PlacableActor &player) override;
 
 	virtual ActorType GetType() override { return ActorType::PressurePlate; }
 	bool IsPressured() { return m_isPressured; }

@@ -27,3 +27,7 @@ void PressurePlate::Draw()
 void checkPressure(Point* actorPosition) {
 
 }
+
+void PressurePlate::gotCollided(PlacableActor& player) {
+	player.SetPosition(GetXPosition(), GetYPosition());
+}

@@ -45,4 +45,4 @@ void PlacableActor::Place(int x, int y)
 	m_pPosition->x = x;
 	m_pPosition->y = y;
 	m_IsActive = true;
-}
+} 

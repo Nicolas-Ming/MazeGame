@@ -7,6 +7,7 @@ public:
 
 	virtual ActorType GetType() override { return ActorType::Enemy; }
 	virtual void Draw() override;
+	virtual void gotCollided(PlacableActor &player) override;
 	virtual void Update() override;
 
 protected:

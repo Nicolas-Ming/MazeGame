@@ -11,5 +11,6 @@ public:
 
 	virtual ActorType GetType() override { return ActorType::Key; }
 	virtual void Draw() override;
+	virtual void gotCollided(PlacableActor &player) override;
 };
 
