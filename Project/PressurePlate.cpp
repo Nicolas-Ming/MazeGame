@@ -21,13 +21,8 @@ void PressurePlate::Draw()
 		SetConsoleTextAttribute(console, (int)m_color);
 		std::cout << (char)177;
 	}
-	
 	SetConsoleTextAttribute(console, (int)ActorColor::Regular);
 }
-void checkPressure(Point* actorPosition) {
-
-}
-
 void PressurePlate::gotCollided(PlacableActor& player) {
 	player.SetPosition(GetXPosition(), GetYPosition());
 }

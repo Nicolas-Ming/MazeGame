@@ -12,7 +12,6 @@ public:
 	bool IsPressured() { return m_isPressured; }
 	void pressured() { m_isPressured = true; }
 	void noPressure() { m_isPressured = false; }
-	//void checkPressure( Point* actorPosition );
 
 private:
 	bool m_isPressured;

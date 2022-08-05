@@ -1,6 +1,7 @@
 #include "GameplayState.h"
 
 #include <iostream>
+#include <thread>
 #include <conio.h>
 #include <windows.h>
 #include <assert.h>
@@ -61,73 +62,72 @@ void GameplayState::Enter()
 	Load();
 }
 
-bool GameplayState::Update(bool processInput)
-{
-	if (processInput && !m_beatLevel)
+void GameplayState::ProcessInput() {
+	int input = _getch();
+	int arrowInput = 0;
+	int newPlayerX = m_player.GetXPosition();
+	int newPlayerY = m_player.GetYPosition();
+
+	// One of the arrow keys were pressed
+	if (input == kArrowInput)
 	{
-		int input = _getch();
-		int arrowInput = 0;
-		int newPlayerX = m_player.GetXPosition();
-		int newPlayerY = m_player.GetYPosition();
+		arrowInput = _getch();
+	}
 
-		// One of the arrow keys were pressed
-		if (input == kArrowInput)
-		{
-			arrowInput = _getch();
-		}
-
-		// Check to see if on an edge and move to opposite side of map
-		if ((input == kArrowInput && arrowInput == kLeftArrow) ||
-			(char)input == 'A' || (char)input == 'a')
-		{
-			newPlayerX--;
-			if (newPlayerX < 0) {
-				newPlayerX = m_pLevel->GetWidth();
-			}
-		}
-		else if ((input == kArrowInput && arrowInput == kRightArrow) ||
-			(char)input == 'D' || (char)input == 'd')
-		{
-			newPlayerX++;
-			if (newPlayerX > m_pLevel->GetWidth()) {
-				newPlayerX = 0;
-			}
-		}
-		else if ((input == kArrowInput && arrowInput == kUpArrow) ||
-			(char)input == 'W' || (char)input == 'w')
-		{
-			newPlayerY--;
-			if (newPlayerY < 0) {
-				newPlayerY = m_pLevel->GetHeight() - 1;
-			}
-		}
-		else if ((input == kArrowInput && arrowInput == kDownArrow) ||
-			(char)input == 'S' || (char)input == 's')
-		{
-			newPlayerY++;
-			if (newPlayerY > m_pLevel->GetHeight() - 1) {
-				newPlayerY = 0;
-			}
-		}
-		else if (input == kEscapeKey)
-		{
-			m_pOwner->LoadScene(StateMachineExampleGame::SceneName::MainMenu);
-		}
-		else if ((char)input == 'Z' || (char)input == 'z')
-		{
-			m_player.DropKey();
-		}
-
-		// If position never changed
-		if (newPlayerX == m_player.GetXPosition() && newPlayerY == m_player.GetYPosition())
-		{
-			//return false;
-		}
-		else
-		{
-			HandleCollision(newPlayerX, newPlayerY);
+	// Check to see if on an edge and move to opposite side of map
+	if ((input == kArrowInput && arrowInput == kLeftArrow) ||
+		(char)input == 'A' || (char)input == 'a')
+	{
+		newPlayerX--;
+		if (newPlayerX < 0) {
+			newPlayerX = m_pLevel->GetWidth();
 		}
 	}
+	else if ((input == kArrowInput && arrowInput == kRightArrow) ||
+		(char)input == 'D' || (char)input == 'd')
+	{
+		newPlayerX++;
+		if (newPlayerX > m_pLevel->GetWidth()) {
+			newPlayerX = 0;
+		}
+	}
+	else if ((input == kArrowInput && arrowInput == kUpArrow) ||
+		(char)input == 'W' || (char)input == 'w')
+	{
+		newPlayerY--;
+		if (newPlayerY < 0) {
+			newPlayerY = m_pLevel->GetHeight() - 1;
+		}
+	}
+	else if ((input == kArrowInput && arrowInput == kDownArrow) ||
+		(char)input == 'S' || (char)input == 's')
+	{
+		newPlayerY++;
+		if (newPlayerY > m_pLevel->GetHeight() - 1) {
+			newPlayerY = 0;
+		}
+	}
+	else if (input == kEscapeKey)
+	{
+		m_pOwner->LoadScene(StateMachineExampleGame::SceneName::MainMenu);
+	}
+	else if ((char)input == 'Z' || (char)input == 'z')
+	{
+		m_player.DropKey();
+	}
+
+	// If position never changed
+	if (newPlayerX == m_player.GetXPosition() && newPlayerY == m_player.GetYPosition())
+	{
+		//return false;
+	}
+	else
+	{
+		HandleCollision(newPlayerX, newPlayerY);
+	}
+}
+
+void GameplayState::BeatLevel (){
 	if (m_beatLevel)
 	{
 		++m_skipFrameCount;
@@ -141,7 +141,7 @@ bool GameplayState::Update(bool processInput)
 				Utility::WriteHighScore(m_player.GetMoney());
 
 				AudioManager::GetInstance()->PlayWinSound();
-				
+
 				m_pOwner->LoadScene(StateMachineExampleGame::SceneName::Win);
 			}
 			else
@@ -152,7 +152,14 @@ bool GameplayState::Update(bool processInput)
 
 		}
 	}
-
+}
+bool GameplayState::Update(bool processInput)
+{
+	if (processInput && !m_beatLevel)
+	{
+		ProcessInput();
+	}
+	BeatLevel();
 	return false;
 }
 
@@ -161,8 +168,8 @@ void GameplayState::HandleCollision(int newPlayerX, int newPlayerY)
 	PlacableActor* collidedActor = m_pLevel->UpdateActors(newPlayerX, newPlayerY);
 	if (collidedActor != nullptr && collidedActor->IsActive())
 	{
-
 		collidedActor->gotCollided(m_player);
+
 		if (collidedActor->GetType() == ActorType::Goal) {
 			m_beatLevel = true;
 		}
